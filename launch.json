@@ -1,0 +1,22 @@
+{
+  "kind": "evm_project",
+  "token": {
+    "contract": "RateLimiterToken",
+    "name": "RateLimiter Demo Token",
+    "symbol": "RLDEMO",
+    "decimals": 18
+  },
+  "pool": {
+    "pairedCurrency": "0x0000000000000000000000000000000000000000",
+    "fee": 3000,
+    "tickSpacing": 60,
+    "initialPrice": "79228162514264337593543950336"
+  },
+  "contracts": [
+    {
+      "contract": "RateLimiter",
+      "constructorArgs": ["10", "60"]
+    }
+  ],
+  "notes": "Application contract: RateLimiter (src/RateLimiter.sol), a permissionless per-address token-bucket rate limiter. Constructor: constructor(uint256 capacity, uint256 refillInterval); manifest arguments are the documented demo parameters capacity = 10 whole credits and refillInterval = 60 seconds (one credit per minute), matching DeployRateLimiter.demoConfig() and the README/DEPLOYMENT.md tables. Both arguments are plain uint256 words; the contract takes no address arguments, so there are no $token, $owner or $contract references. The contract has no owner, no admin, pause, upgrade or parameter-change path, no receive/fallback, no external calls, no DELEGATECALL/CALLCODE/SELFDESTRUCT, and holds no ETH or tokens. Every address's bucket starts full (10 credits); consume(n) accepts 1..10 and charges only msg.sender; refill accrues one credit per 60 s while below capacity with fractional progress preserved, and a full bucket accrues nothing. Verified locally with forge build --offline and forge test --offline (25 tests passing, including the randomised model comparison). Target chain: Sepolia (11155111) only; the delivered script refuses chain id 1. TOKEN GAP, MUST BE RESOLVED BEFORE DEPLOYMENT: the accepted tree contains no ERC-20 because the approved brief says 'do not create a token' (README, 'Incomplete checks and known gaps'). The evm_project schema nevertheless requires a token entry, so the token block above names RateLimiterToken as the identifier a later builder assignment would use for the fixed-supply launch token (1,000,000,000 * 10^18 minted to msg.sender, no constructor arguments, 18 decimals, no mint/admin path). No contract with that name exists in the accepted source, so attestation/deployment cannot proceed from this tree as-is; either a token contract must be added under that name by a build assignment, or the launch must be re-scoped as a token-less deployment of RateLimiter. This manifest asserts nothing about a token's bytecode. Pool: native ETH pair (zero address), fee 3000, tickSpacing 60, initialPrice 2^96 (sqrtPriceX96 for a 1:1 opening); the deployer derives the effective opening price from the pinned policy when it sets initialMarketCapWei. No supply, allocation or owner fields belong in this manifest; ownership and rewards come from policy. Deployment record (address, tx hash, explorer link) is not filled in this tree because no wallet or RPC credential was available to any contributor task; DEPLOYMENT.md holds the exact commands and ABI-encoded constructor arguments (0x...0a followed by 0x...3c) for the operator."
+}
