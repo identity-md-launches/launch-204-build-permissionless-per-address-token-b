@@ -1,0 +1,13 @@
+# Foundry build outputs
+out/
+cache/
+
+# Local dry-run broadcasts (anvil); real Sepolia broadcasts under broadcast/*/11155111/ are kept.
+broadcast/*/31337/
+
+# Scratch space used only during development
+test/scratch/
+
+# Secrets are never committed
+.env
+.env.*
